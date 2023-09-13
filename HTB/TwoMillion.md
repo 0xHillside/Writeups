@@ -316,7 +316,7 @@ okay so thankfully we know what we are missing we add that to our body
 
 And now my user is finally admin.. YIPPEE!!
 
-now this is where in all honesty I was assisted by a friend, s1mple proceeded to assist me with the command injection in this field when i never really thought of it and so we did and bam
+now this is where in all honesty I was assisted by a friend, he proceeded to assist me with the command injection in this field when i never really thought of it and so we did and bam
 
 
 ![18 response](https://github.com/0xHillside/Writeups/assets/109657189/cf4c6b7a-afc0-4f1b-90f8-ffde9144b9ea)
