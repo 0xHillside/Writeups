@@ -30,19 +30,16 @@ Nmap done: 1 IP address (1 host up) scanned in 11.60 seconds
 
 I then proceeded to add the IP to my `/etc/hosts` calling it `http://2million.htb/` so ill be using that as an address. 
 
-Back to enumeration, i opened the link to see the following. The old goddamn fucking theme tryna hit me with a flashback or some shit the scope was quite large which made enumeration very difficult on this box, so while I was browsing the machine I decided to run dirsearch!
+Back to enumeration, I browserd through register, login and all of the pages and then I found that when clicking the JOIN button it redirects me to `/invite` which has an off-putting smiling image 
 
-
-
- I found that when clicking the JOIN button it redirects me to `/invite` which has an off-putting smiling image 
-
-![5  INVITE](https://github.com/0xHillside/Writeups/assets/109657189/51b89305-f223-477b-a373-a696d9cd09f5)
+![5  INVITE](https://github.com/0xHillside/Writeups/assets/109657189/2af5ad40-68fc-4a4f-bb8e-87c4e04d3da8)
 
 
 
 in all honesty I am not the best at javascript so I was quite slow on this part when looking at the source code 
 
-![6  invitesource](https://github.com/0xHillside/Writeups/assets/109657189/f63a896b-dc93-421b-8c6a-310c9334bd80)
+![6  invitesource](https://github.com/0xHillside/Writeups/assets/109657189/41ae338b-88fe-4dcf-b679-650b9a3f8372)
+
 
 
 
@@ -93,13 +90,13 @@ $.ajax({
 ```
 
 we can see that there's another API endpoint we finally discovered looking back at the source code there was also this javascript file that flew past me
+![6  jscript](https://github.com/0xHillside/Writeups/assets/109657189/685a318c-229e-41e6-8f9d-87d2d9560f26)
 
-![6  jscript](https://github.com/0xHillside/Writeups/assets/109657189/0f4fef21-007b-4879-8214-a1842ca67ac3)
 
 
 Opening it we found the following
 
-![7  fuck you](https://github.com/0xHillside/Writeups/assets/109657189/1cfae93e-614c-44ab-80f9-0a41ecf9b521)
+![7  fuck you](https://github.com/0xHillside/Writeups/assets/109657189/8ffeb356-e3e6-4f0a-8480-8b9a931cd6e0)
 
 Extremely annoying, and tedious but the solution is rather simpler, we just throw this code in any online javascript beautifier and problem fixed
 
@@ -143,7 +140,8 @@ So far this we can see that we need to make an invite code and thankfully now we
 `url: '/api/v1/invite/how/to/generate'`
 
 so lets head over to that page, lets not forget the requirements that are available in the javascript function, it needs to be a a `POST` request and have `json` as the content type, following those steps you should get a response of something looking like this 
-![8 REquest](https://github.com/0xHillside/Writeups/assets/109657189/816048ce-a405-4801-a7e4-f8ebac49bf5e)
+
+![8 REquest](https://github.com/0xHillside/Writeups/assets/109657189/240ddb03-c21d-489a-a799-39a7aaef4879)
 
 
 ```
@@ -175,13 +173,12 @@ Okay here we could see that we have a fucking encrypted message using, ROT13 so 
 
 ## Register code obtained
 
-![9  ROT13](https://github.com/0xHillside/Writeups/assets/109657189/a7679955-c1bc-4399-bd48-a14f04dc041d)
+![9  ROT13](https://github.com/0xHillside/Writeups/assets/109657189/4c567b09-c29c-4509-aa51-99207a1908fb)
 
 so now we know our next destination is `POST request to /api/v1/invite/generate`
 
 
-![10 request](https://github.com/0xHillside/Writeups/assets/109657189/26932e3c-dc39-468a-989e-fd487ea99354)
-
+![10 request](https://github.com/0xHillside/Writeups/assets/109657189/844564e0-f3aa-4208-a830-dc51a790a30d)
 
 
 ```
@@ -212,26 +209,26 @@ Decoding that we get the following code `OJIE8-WXWWJ-N4M24-CKOUA`
 
 so now lets register
 
-![11 Registreation](https://github.com/0xHillside/Writeups/assets/109657189/a0d4f414-4210-46a0-b43b-53f6d35a0609)
+
+![11 Registreation](https://github.com/0xHillside/Writeups/assets/109657189/f352ce62-a6fc-4f1d-9006-eddd1ee40803)
 
 
 after logging in again we are met with another huge scope which is ofcourse extremely tedious but still managebale
 
-![12 Home](https://github.com/0xHillside/Writeups/assets/109657189/d5b59afe-3299-4de6-b01b-4f49749e737b)
+![12 Home](https://github.com/0xHillside/Writeups/assets/109657189/291172af-24b2-4bc0-854a-8ff12733a25f)
 
 
 ## Different POV, same API
 now that we are logged in a friend suggested we go back to the homepage and access the API from there and boom
 
-![13 request](https://github.com/0xHillside/Writeups/assets/109657189/375713d1-cced-4c0c-8a00-48915b106441)
 
+![13 request](https://github.com/0xHillside/Writeups/assets/109657189/4045b694-eb44-487f-8c8c-534db84f1136)
 
 ## API mapping
 
 now we do the same to v1 and low and behold
 
-![14 API](https://github.com/0xHillside/Writeups/assets/109657189/637c569a-5780-44f3-ac37-66eb60e596b5)
-
+![14 API](https://github.com/0xHillside/Writeups/assets/109657189/8c21479f-b71d-47f3-978a-cebe2231a4ab)
 
 ```
 RESPONSE
@@ -285,7 +282,7 @@ I was delighted seeing all of this in one response, it gave me a clear pathway t
 ### Updating user settings through API
 Now clearly the biggest bang for our buck right now is the PUT method and for that I simply changed the request method to  POST and instead of POST I typed in there PUT
 
-![15 response](https://github.com/0xHillside/Writeups/assets/109657189/a5febb7f-8db8-4032-8ef2-350ed6b1a0a4)
+![15 response](https://github.com/0xHillside/Writeups/assets/109657189/129ab6cd-b539-4d4f-878b-7b94caebe921)
 
 
 the response:
@@ -308,20 +305,21 @@ Content-Length: 56
 ```
 
 okay missing parameter so lets fix that
+![16 response](https://github.com/0xHillside/Writeups/assets/109657189/93f978dd-4369-4872-b3cd-9a577a5c6837)
 
-![16 response](https://github.com/0xHillside/Writeups/assets/109657189/6888373f-0baa-4952-b58d-296fa491b54a)
 
 
 okay so thankfully we know what we are missing we add that to our body
 
-![17 response](https://github.com/0xHillside/Writeups/assets/109657189/f03797c2-f8bf-4beb-8fe3-237647a48c2d)
+![17 response](https://github.com/0xHillside/Writeups/assets/109657189/4c30acbe-0f94-4a53-affb-094dee7dbfe9)
 
 
 And now my user is finally admin.. YIPPEE!!
 
 now this is where in all honesty I was assisted by a friend, s1mple proceeded to assist me with the command injection in this field when i never really thought of it and so we did and bam
 
-![18 response](https://github.com/0xHillside/Writeups/assets/109657189/f1a25fd6-8f6e-4d34-a1cd-c13e1f5c9191)
+
+![18 response](https://github.com/0xHillside/Writeups/assets/109657189/cf4c6b7a-afc0-4f1b-90f8-ffde9144b9ea)
 
 
 another hint given by him S1mple was encoding the shellcode to make it easier and coincidentally it was the same thing used in the writeup. it is EXTREMELY useful where to get a reverse shell its best to encode it in base64, then pipe it into a decoding it using the base64 and then piping it into bash
@@ -556,8 +554,8 @@ https://securityonline.info/poc-exploit-released-for-linux-kernel-privilege-esca
 
 https://github.com/xkaneiki/CVE-2023-0386/tree/main
 
+![19 CVE](https://github.com/0xHillside/Writeups/assets/109657189/bd438afe-fc8a-47b5-93e7-57612e5a3b63)
 
-![19 CVE](https://github.com/0xHillside/Writeups/assets/109657189/b5e1f3ad-cfaa-407c-8955-cf96bd56e3fb)
 
 
 
